@@ -7,13 +7,13 @@ import locale
 #Monetário
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
-#inicial
+#Entrada de dados
 capital = float(input("Digite o capital inicial (R$): "))
 aporte = float(input("Digite o aporte mensal (R$): "))
 meses = int(input("Prazo mensal: "))
 cdi_anual = float(input("CDI anual (%): "))/100
-perc_cdb = float(input("Percentual do CDI (%)"))/100
-perc_lci = float(input("Percentual do LCI (%)"))/100
+perc_cdb = float(input("Percentual do CDI (%): "))/100
+perc_lci = float(input("Percentual do LCI (%): "))/100
 taxa_fii = float(input("Porcentalidade mensal FII (%): "))/100
 meta = float(input("Meta financeira (R$): "))
 
@@ -51,10 +51,48 @@ desvio_fii = statistics.stdev(lista_fii)
 
 
 #Data de resgate
-data_atual = datetime.datetime.now()
-data_final = data_atual + datetime.timedelta(days = meses * 30)
+data_atual = datetime.date.today()
+data_resgate = data_atual + datetime.timedelta(days = meses * 30)
+
+#Indicador booleano meta financeira
+meta_atingida = media_fii >= meta
+
+#Gráfico ASCII
+Escala = 1000
+
+Barras_cdb = int(montante_cdb_liquido/Escala)
+Barras_lci = int(montante_lci/Escala)
+Barras_poupanca = int(montante_poupanca/Escala)
+Barras_fii = int(montante_fii/Escala)
+
+Grafico_cdb = "█" * Barras_cdb
+Grafico_lci = "█" * Barras_lci
+Grafico_poupança = "█" * Barras_poupanca
+Grafico_fii = "█" * Barras_fii
 
 #Relatório final
+print("=====================================")
+print("PyInvest - Simulador de Investimentos")
+print("=====================================")
+print("Data de simulação:", data_atual.strftime("%d/%m/%Y"))
+print("Data estimada de resgate:", data_resgate.strftime("%d/%m/%Y"))
+print("=====================================")
+print("\n----TOTAL INVESTIDO----")
+print("Total investido:", locale.currency(total_investido, grouping=True))
+print("\n--- RESULTADOS FINANCEIROS ---")
+print("CDB:", locale.currency(montante_cdb_liquido, grouping=True))
+print(Grafico_cdb)
+print("\n", locale.currency(montante_lci, grouping=True))
+print(Grafico_lci)
+print("\nPoupança:", locale.currency(montante_poupanca, grouping=True))
+print(Grafico_poupança)
+print("\nFII (média):", locale.currency(media_fii, grouping=True))
+print(Grafico_fii)
+print("\n--- ESTATÍSTICAS FII ---")
+print("Mediana: ", locale.currency(mediana_fii, grouping=True))
+print("Desvio padrão: ", locale.currency(desvio_fii, grouping=True))
+print("\nMeta atingida?", meta_atingida)
+print("=====================================")
 
 
 
